@@ -33,6 +33,7 @@ private:
 	void MoveRight(float AxisValue);
 	void LookUpRate(float AxisValue);
 	void LookRightRate(float AxisValue);
+	void PullTrigger();
 
 	UPROPERTY(EditAnywhere, Category="Movement")
 	float RotationRate = 75;

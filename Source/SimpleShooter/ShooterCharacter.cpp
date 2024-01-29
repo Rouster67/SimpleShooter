@@ -50,6 +50,7 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	
 	//bind actions
 	PlayerInputComponent->BindAction(TEXT("Jump"), EInputEvent::IE_Pressed, this, &ACharacter::Jump);
+	PlayerInputComponent->BindAction(TEXT("Fire"), EInputEvent::IE_Pressed, this, &AShooterCharacter::PullTrigger);
 }
 
 void AShooterCharacter::MoveForward(float AxisValue)
@@ -72,4 +73,10 @@ void AShooterCharacter::LookRightRate(float AxisValue)
 {
 	//Makes using a game controller framerate independant
 	AddControllerYawInput(AxisValue * RotationRate * GetWorld()->GetDeltaSeconds());
+}
+
+void AShooterCharacter::PullTrigger()
+{
+	if(Gun)
+		Gun->PullTrigger();
 }

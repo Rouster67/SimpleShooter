@@ -3,6 +3,7 @@
 
 #include "Gun.h"
 #include "Components\SkeletalMeshComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AGun::AGun()
@@ -10,12 +11,27 @@ AGun::AGun()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	//creates root
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	SetRootComponent(Root);
 
+	//creates components
 	Mesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(Root);
 
+}
+
+void AGun::PullTrigger()
+{
+	//Spawn Particles
+	if(MuzzleFlash)
+	{
+		UGameplayStatics::SpawnEmitterAttached(
+			MuzzleFlash,
+			Mesh,
+			TEXT("MuzzleFlashSocket")
+		);
+	}
 }
 
 // Called when the game starts or when spawned

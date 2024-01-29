@@ -15,17 +15,25 @@ public:
 	// Sets default values for this actor's properties
 	AGun();
 
+	void PullTrigger();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	//visual effects
+	UPROPERTY(EditAnywhere, Category="Effects")
+	class UParticleSystem* MuzzleFlash;
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 private:
-	UPROPERTY(VisibleAnywhere)
+	//components
+	UPROPERTY(VisibleAnywhere, Category="Components")
 	class USceneComponent* Root;
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Category="Components")
 	class USkeletalMeshComponent* Mesh;
+
 };
