@@ -6,6 +6,9 @@
 #include "GameFramework/Actor.h"
 #include "Gun.generated.h"
 
+//forward declarations
+class UParticleSystem14;
+
 UCLASS()
 class SIMPLESHOOTER_API AGun : public AActor
 {
@@ -23,7 +26,9 @@ protected:
 
 	//visual effects
 	UPROPERTY(EditAnywhere, Category="Effects")
-	class UParticleSystem* MuzzleFlash;
+	UParticleSystem* MuzzleFlash;
+	UPROPERTY(EditAnywhere, Category="Effects")
+	UParticleSystem* ImpactEffect;
 
 public:	
 	// Called every frame
@@ -35,5 +40,9 @@ private:
 	class USceneComponent* Root;
 	UPROPERTY(VisibleAnywhere, Category="Components")
 	class USkeletalMeshComponent* Mesh;
+
+	//Variables
+	UPROPERTY(EditAnywhere, Category="Weapon")
+	float MaxRange = 100000;
 
 };

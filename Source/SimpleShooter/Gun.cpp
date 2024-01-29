@@ -4,6 +4,8 @@
 #include "Gun.h"
 #include "Components\SkeletalMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "DrawDebugHelpers.h"
+#include "Engine/World.h" 
 
 // Sets default values
 AGun::AGun()
@@ -23,13 +25,51 @@ AGun::AGun()
 
 void AGun::PullTrigger()
 {
-	//Spawn Particles
+	//Spawn Muzzle Flash
 	if(MuzzleFlash)
 	{
 		UGameplayStatics::SpawnEmitterAttached(
 			MuzzleFlash,
 			Mesh,
 			TEXT("MuzzleFlashSocket")
+		);
+	}
+
+	//get owner pawn
+	APawn* OwnerPawn = Cast<APawn>(GetOwner());
+	if(OwnerPawn == nullptr) return;
+	//get controller from owner pawn
+	AController* OwnerController = OwnerPawn->GetController();
+	if(OwnerController == nullptr) return;
+
+	//gets start of line trace
+	FVector ViewPointLocation;
+	FRotator ViewPointRotation;
+	OwnerController->GetPlayerViewPoint(
+		ViewPointLocation,
+		ViewPointRotation
+	);
+	//gets end of line trace
+	FVector ViewPointEnd = ViewPointLocation + ViewPointRotation.Vector() * MaxRange;
+
+	//gets hit result
+	FHitResult HitResult;
+	bool Hit = GetWorld()->LineTraceSingleByChannel(
+		HitResult,
+		ViewPointLocation,
+		ViewPointEnd,
+		ECollisionChannel::ECC_GameTraceChannel1
+	);
+
+	//Spawn Impact Effect
+	if(Hit && ImpactEffect)
+	{
+		FVector ShotDirection = -ViewPointRotation.Vector();
+		UGameplayStatics::SpawnEmitterAtLocation(
+			GetWorld(),
+			ImpactEffect,
+			HitResult.Location,
+			ShotDirection.Rotation()
 		);
 	}
 }
