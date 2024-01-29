@@ -36,3 +36,27 @@ private:
 	float RotationRate = 75;
 	
 };
+
+/*
+formula to calculate animation speed
+foot_speed = (y_finish - y_start) / (t_finish - t_start)
+t = time
+y = y axis
+*/
+
+
+
+/*
+FS = (YF - YS) / (TF - TS)
+FS = (-39.774193 - 19.034456) / (.35 - .15)
+FS = -58.808649 / 0.2
+Run FS = -294.043245
+
+FS = (-26.927351 - 35.112503) / (.71 - .22)
+FS = -62.039854 / .49
+Walk FS = -126.6119469387755
+
+Walk = 150 
+Run = 300
+Divisions = 6 (300 / 50)
+*/
