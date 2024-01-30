@@ -70,6 +70,11 @@ float AShooterCharacter::TakeDamage(float DamageAmount, struct FDamageEvent cons
 
 }
 
+void AShooterCharacter::Shoot()
+{
+	PullTrigger();
+}
+
 bool AShooterCharacter::IsDead() const
 {
 	if (Health <= 0)
