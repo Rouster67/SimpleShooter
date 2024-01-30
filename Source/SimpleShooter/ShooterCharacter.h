@@ -27,6 +27,11 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	
+	UFUNCTION(BlueprintPure)
+	bool IsDead() const;
+
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 
 private:
 	void MoveForward(float AxisValue);
@@ -41,10 +46,25 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category="Weapon")
 	TSubclassOf<AGun> GunClass;
 
+	UPROPERTY(EditDefaultsOnly, Category="Stats")
+	float MaxHealth = 100;
+
+	UPROPERTY(VisibleAnywhere, Category="Stats")
+	float Health;
+
 	UPROPERTY()
 	AGun* Gun;
 	
 };
+
+
+
+
+
+
+
+
+
 
 /*
 formula to calculate animation speed

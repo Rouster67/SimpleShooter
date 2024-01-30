@@ -44,5 +44,6 @@ private:
 	//Variables
 	UPROPERTY(EditAnywhere, Category="Weapon")
 	float MaxRange = 100000;
-
+	UPROPERTY(EditAnywhere, Category="Weapon")
+	float Damage = 10;
 };

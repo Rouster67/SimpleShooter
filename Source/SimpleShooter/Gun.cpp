@@ -5,7 +5,8 @@
 #include "Components\SkeletalMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "DrawDebugHelpers.h"
-#include "Engine/World.h" 
+#include "Engine/World.h"
+#include "Engine/DamageEvents.h"
 
 // Sets default values
 AGun::AGun()
@@ -61,16 +62,32 @@ void AGun::PullTrigger()
 		ECollisionChannel::ECC_GameTraceChannel1
 	);
 
-	//Spawn Impact Effect
-	if(Hit && ImpactEffect)
+	if(Hit)
 	{
+		//Gets the direction of the shot
 		FVector ShotDirection = -ViewPointRotation.Vector();
-		UGameplayStatics::SpawnEmitterAtLocation(
-			GetWorld(),
-			ImpactEffect,
-			HitResult.Location,
-			ShotDirection.Rotation()
-		);
+		//gets the actor
+		AActor* HitActor = HitResult.GetActor();
+
+		//applies damage to hit actor
+		if(HitActor)
+		{
+			//creates damage event
+			FPointDamageEvent DamageEvent(Damage, HitResult, ShotDirection, nullptr);
+			//applies damage
+			HitActor->TakeDamage(Damage, DamageEvent, OwnerController, this);
+		}
+
+		//spawns impact effect
+		if(ImpactEffect)
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(
+				GetWorld(),
+				ImpactEffect,
+				HitResult.Location,
+				ShotDirection.Rotation()
+			);
+		}
 	}
 }
 
