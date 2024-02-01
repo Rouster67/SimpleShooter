@@ -54,8 +54,18 @@ private:
 	UPROPERTY(VisibleAnywhere, Category="Stats")
 	float Health;
 
+	UPROPERTY(EditAnywhere, Category="Stats")
+	double RegenDelay = 5;
+
+	UPROPERTY(EditAnywhere, Category="Stats")
+	float RegenRate = 15;
+
 	UPROPERTY()
 	AGun* Gun;
+
+	double LastHitTime = 0;
+	double RegenBeginTime = 0;
+	double HealthTick = 1;
 	
 };
 

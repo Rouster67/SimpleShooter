@@ -41,6 +41,11 @@ private:
 	UPROPERTY(VisibleAnywhere, Category="Components")
 	class USkeletalMeshComponent* Mesh;
 
+	UPROPERTY(EditAnywhere, Category="Sounds")
+	class USoundBase* MuzzleSound;
+	UPROPERTY(EditAnywhere, Category="Sounds")
+	class USoundBase* ImpactSound;
+
 	//Variables
 	UPROPERTY(EditAnywhere, Category="Weapon")
 	float MaxRange = 100000;
@@ -49,4 +54,10 @@ private:
 
 	//Functions
 	bool GunTrace(FHitResult& HitResult, FVector& ShotDirection);
+	void ApplyDamage(FHitResult& HitResult, FVector& ShotDirection);
+	void MuzzleEffects();
+	void ImpactEffects(FHitResult& HitResult, FVector& ShotDirection);
+	class APawn* GetOwnerPawn() const;
+	class AController* GetOwnerController() const;
+
 };

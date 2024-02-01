@@ -5,6 +5,7 @@
 #include "Gun.h"
 #include "Components/CapsuleComponent.h"
 #include "SimpleShooterGameModeBase.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter()
@@ -38,6 +39,30 @@ void AShooterCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
+	if(!IsDead())
+	{
+		if(Health >= MaxHealth)
+		{
+			Health = MaxHealth;
+			HealthTick = 1;
+		}
+
+		if(Health < MaxHealth && GetWorld()->GetTimeSeconds() > RegenBeginTime)
+		{
+			if(HealthTick >= 1)
+			{
+			HealthTick = 0;
+			Health += RegenRate;
+			}
+			else
+			{
+				HealthTick += DeltaTime;
+			}
+		}
+	}
+	
+	if(Health < MaxHealth && !IsDead())
+		UE_LOG(LogTemp, Warning, TEXT("Health: %f"), Health);
 }
 
 // Called to bind functionality to input
@@ -79,6 +104,9 @@ float AShooterCharacter::TakeDamage(float DamageAmount, struct FDamageEvent cons
 		DetachFromControllerPendingDestroy();
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
+
+	LastHitTime = GetWorld()->GetTimeSeconds();
+	RegenBeginTime = LastHitTime + RegenDelay;
 
 	return DamageToApply;
 }
