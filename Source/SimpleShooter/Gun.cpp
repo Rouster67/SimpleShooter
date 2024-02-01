@@ -26,6 +26,9 @@ AGun::AGun()
 
 void AGun::PullTrigger()
 {
+	//checks if gun can fire
+	if(!CanFire) return;
+
 	//plays muzzle effects
 	MuzzleEffects();
 
@@ -42,6 +45,9 @@ void AGun::PullTrigger()
 		//plays impact effects
 		ImpactEffects(HitResult, ShotDirection);
 	}
+
+	//sets up next time to fire
+	TriggerDelay();
 }
 
 // Called when the game starts or when spawned
@@ -56,6 +62,10 @@ void AGun::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if(!CanFire && GetWorld()->GetTimeSeconds() > CanFireTime)
+	{
+		CanFire = true;
+	}
 }
 
 bool AGun::GunTrace(FHitResult& HitResult, FVector& ShotDirection)
@@ -90,14 +100,33 @@ void AGun::ApplyDamage(FHitResult& HitResult, FVector& ShotDirection)
 {
 	//gets the actor
 	AActor* HitActor = HitResult.GetActor();
+	//Gets the bone hit
+	FString BoneName = HitResult.BoneName.ToString();
+
+	UE_LOG(LogTemp, Display, TEXT("Bone Hit: %s"), *BoneName);
+
+	float thisDamage = Damage;
+	if(BoneName == "head")
+	{
+		thisDamage *= HeadShotMultiplier;
+
+		if(HeadShotSound)
+	{
+		UGameplayStatics::SpawnSoundAttached(
+			HeadShotSound,
+			Mesh,
+			TEXT("MuzzleFlashSocket")
+		);
+	}
+	}
 
 	//applies damage to hit actor
 	if(HitActor)
 	{
 		//creates damage event
-		FPointDamageEvent DamageEvent(Damage, HitResult, ShotDirection, nullptr);
+		FPointDamageEvent DamageEvent(thisDamage, HitResult, ShotDirection, nullptr);
 		//applies damage
-		HitActor->TakeDamage(Damage, DamageEvent, Cast<APawn>(GetOwner())->GetController(), this);
+		HitActor->TakeDamage(thisDamage, DamageEvent, Cast<APawn>(GetOwner())->GetController(), this);
 	}
 }
 
@@ -146,6 +175,13 @@ void AGun::ImpactEffects(FHitResult& HitResult, FVector& ShotDirection)
 			ShotDirection.Rotation()
 		);
 	}
+}
+
+void AGun::TriggerDelay()
+{
+	CanFire = false;
+	TimeBetweenShots = 1 / RateOfFire;
+	CanFireTime = GetWorld()->GetTimeSeconds() + TimeBetweenShots;
 }
 
 class APawn* AGun::GetOwnerPawn() const

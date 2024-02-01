@@ -45,18 +45,29 @@ private:
 	class USoundBase* MuzzleSound;
 	UPROPERTY(EditAnywhere, Category="Sounds")
 	class USoundBase* ImpactSound;
+	UPROPERTY(EditAnywhere, Category="Sounds")
+	class USoundBase* HeadShotSound;
 
 	//Variables
 	UPROPERTY(EditAnywhere, Category="Weapon")
 	float MaxRange = 100000;
 	UPROPERTY(EditAnywhere, Category="Weapon")
 	float Damage = 40;
+	UPROPERTY(EditAnywhere, Category="Weapon")
+	float HeadShotMultiplier = 2.5;
+	UPROPERTY(EditAnywhere, Category="Weapon")
+	float RateOfFire = 1;
+
+	float TimeBetweenShots;
+	bool CanFire = true;
+	double CanFireTime;
 
 	//Functions
 	bool GunTrace(FHitResult& HitResult, FVector& ShotDirection);
 	void ApplyDamage(FHitResult& HitResult, FVector& ShotDirection);
 	void MuzzleEffects();
 	void ImpactEffects(FHitResult& HitResult, FVector& ShotDirection);
+	void TriggerDelay();
 	class APawn* GetOwnerPawn() const;
 	class AController* GetOwnerController() const;
 
