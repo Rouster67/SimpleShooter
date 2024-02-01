@@ -55,11 +55,15 @@ void AGun::PullTrigger()
 
 	//gets hit result
 	FHitResult HitResult;
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(this);
+	Params.AddIgnoredActor(OwnerPawn);
 	bool Hit = GetWorld()->LineTraceSingleByChannel(
 		HitResult,
 		ViewPointLocation,
 		ViewPointEnd,
-		ECollisionChannel::ECC_GameTraceChannel1
+		ECollisionChannel::ECC_GameTraceChannel1,
+		Params
 	);
 
 	if(Hit)
