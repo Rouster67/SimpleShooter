@@ -109,3 +109,8 @@ void AGun::Tick(float DeltaTime)
 
 }
 
+bool AGun::GunTrace(FHitResult& HitResult, FVector& ShotDirection)
+{
+	
+}
+
