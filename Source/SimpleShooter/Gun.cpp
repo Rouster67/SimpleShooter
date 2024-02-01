@@ -132,7 +132,7 @@ void AGun::ImpactEffects(FHitResult& HitResult, FVector& ShotDirection)
 		UGameplayStatics::PlaySoundAtLocation(
 			GetWorld(),
 			ImpactSound,
-			HitResult.Location,
+			HitResult.Location
 		);
 	}
 
