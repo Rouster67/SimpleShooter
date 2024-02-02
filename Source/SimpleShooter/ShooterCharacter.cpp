@@ -40,29 +40,22 @@ void AShooterCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	
 	if(!IsDead())
-	{
-		if(Health >= MaxHealth)
-		{
-			Health = MaxHealth;
-			HealthTick = 1;
-		}
+    {
+        // Ensure health does not exceed maximum health
+        if(Health >= MaxHealth)
+        {
+            Health = MaxHealth;
+        }
+        else if(GetWorld()->GetTimeSeconds() > RegenBeginTime)
+        {
+            // Smooth health regeneration over time
+            float RegenAmount = RegenRate * DeltaTime; // Calculate regeneration amount based on DeltaTime
+            Health += RegenAmount;
 
-		if(Health < MaxHealth && GetWorld()->GetTimeSeconds() > RegenBeginTime)
-		{
-			if(HealthTick >= 1)
-			{
-			HealthTick = 0;
-			Health += RegenRate;
-			}
-			else
-			{
-				HealthTick += DeltaTime;
-			}
-		}
-	}
-	
-	if(Health < MaxHealth && !IsDead())
-		UE_LOG(LogTemp, Warning, TEXT("Health: %f"), Health);
+            // Clamp health to not exceed MaxHealth
+            Health = FMath::Min(Health, MaxHealth);
+        }
+    }
 }
 
 // Called to bind functionality to input
@@ -90,8 +83,6 @@ float AShooterCharacter::TakeDamage(float DamageAmount, struct FDamageEvent cons
 	DamageToApply = FMath::Min(Health, DamageToApply);
 
 	Health -= DamageToApply;
-
-	UE_LOG(LogTemp, Warning, TEXT("Health left: %f"), Health);
 
 	if(IsDead())
 	{
